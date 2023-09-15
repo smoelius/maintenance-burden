@@ -61,9 +61,20 @@ fn dogfood() {
 }
 
 fn clean() -> Result<bool> {
-    let output = Command::new("git").args(["diff", "--exit-code"]).output()?;
+    const ARGS: [&[&str]; 2] = [&[], &["--cached"]];
 
-    Ok(output.status.success())
+    for args in ARGS {
+        let output = Command::new("git")
+            .args(["diff", "--exit-code"])
+            .args(args)
+            .output()?;
+
+        if !output.status.success() {
+            return Ok(false);
+        }
+    }
+
+    Ok(true)
 }
 
 fn enabled(key: &str) -> bool {
