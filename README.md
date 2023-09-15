@@ -14,6 +14,7 @@ The following is the output currently produced by running `maintenance-burden` o
 <!-- maintenance-burden-start -->
 
 ```
+       0  .github/dependabot.yml
        0  .gitignore
        0  Cargo.toml
        0  src/main.rs
