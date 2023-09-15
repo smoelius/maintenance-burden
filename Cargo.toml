@@ -1,7 +1,11 @@
 [package]
 name = "maintenance-burden"
 version = "0.1.0"
+authors = ["Samuel Moelius <sam@moeli.us>"]
+description = "Calculate the maintenance burden of each file in a git repository"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/smoelius/maintenance-burden"
 
 [dependencies]
 anyhow = { version = "1.0", features = ["backtrace"] }
