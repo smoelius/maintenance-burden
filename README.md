@@ -14,7 +14,12 @@ The following is the output currently produced by running `maintenance-burden` o
 <!-- maintenance-burden-start -->
 
 ```
-
+       0  .gitignore
+       0  Cargo.toml
+       0  src/main.rs
+       0  tests/dogfood.rs
+       2  README.md
+      12  Cargo.lock
 ```
 
 <!-- maintenance-burden-end -->
