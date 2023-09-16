@@ -6,10 +6,10 @@ use std::{
     io::Result,
 };
 
+const MAX_RETRIES: u8 = 4;
+
 const START: &str = "<!-- maintenance-burden-start -->\n\n```\n";
 const END: &str = "```\n\n<!-- maintenance-burden-end -->\n";
-
-const MAX_RETRIES: u8 = 4;
 
 #[test]
 fn dogfood() {
