@@ -18,8 +18,8 @@ The following is the output currently produced by running `maintenance-burden` o
        0  .gitignore
        0  Cargo.toml
        0  src/main.rs
-       2  tests/dogfood.rs
-       4  README.md
+       3  tests/dogfood.rs
+       6  README.md
       12  Cargo.lock
 ```
 
