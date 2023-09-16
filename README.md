@@ -9,7 +9,7 @@ We define the _maintenance burden_ of a file to be the difference between the fo
 
 So, for example, if a file has only ever had lines added (never deleted), it will have a maintenance burden of 0.
 
-The following is the output currently produced by running `maintenance-burden` on its own repository:
+Running `maintenance-burden` on its own repository produces the following output:
 
 <!-- maintenance-burden-start -->
 
@@ -17,9 +17,9 @@ The following is the output currently produced by running `maintenance-burden` o
        0  .github/dependabot.yml
        0  .gitignore
        0  Cargo.toml
-       0  src/main.rs
+       1  src/main.rs
        5  tests/dogfood.rs
-       8  README.md
+      11  README.md
       12  Cargo.lock
 ```
 
