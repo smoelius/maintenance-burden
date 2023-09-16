@@ -16,6 +16,7 @@ fn main() -> Result<()> {
 
     let mut lines_map = BTreeMap::<String, Option<usize>>::new();
     let mut added_map = BTreeMap::<String, usize>::new();
+    let mut deleted_map = BTreeMap::<String, usize>::new();
     let mut rename_map = BTreeMap::<String, String>::new();
 
     let mut popen = Exec::cmd("git")
@@ -28,15 +29,18 @@ fn main() -> Result<()> {
     for result in reader.lines() {
         let line = result.with_context(|| "Failed to read git output")?;
 
-        let &[added, _deleted, pathname] = line.split('\t').collect::<Vec<_>>().as_slice() else {
+        let &[added, deleted, pathname] = line.split('\t').collect::<Vec<_>>().as_slice() else {
             panic!("Unexpected line: {line:?}");
         };
+
+        assert_eq!(added == "-", deleted == "-");
 
         if added == "-" {
             continue;
         }
 
         let added = usize::from_str(added).unwrap();
+        let deleted = usize::from_str(deleted).unwrap();
 
         let maybe_from_to = is_rename(pathname);
 
@@ -60,27 +64,27 @@ fn main() -> Result<()> {
         }
 
         *added_map.entry(final_to_name.to_owned()).or_default() += added;
+        *deleted_map.entry(final_to_name.to_owned()).or_default() += deleted;
 
         if let Some([from_name, _]) = &maybe_from_to {
             rename_map.insert(from_name.to_string(), final_to_name.to_owned());
         }
     }
 
-    let mut results = added_map
+    let mut results = deleted_map
         .iter()
-        .map(|(path, &added)| {
+        .map(|(path, &deleted)| {
             let lines = lines_map.get(path).unwrap().unwrap();
-            (added as isize - lines as isize, path)
+            let added = *added_map.get(path).unwrap();
+            (deleted, added as isize - lines as isize, path)
         })
         .collect::<Vec<_>>();
 
-    results.sort_by_key(|&(score, _)| score);
+    results.sort_by_key(|&(deleted, _, _)| deleted);
 
     maybe_warn(&results);
 
-    for (score, path) in results {
-        println!("{score:>8}  {path}");
-    }
+    display_results(&results);
 
     Ok(())
 }
@@ -129,12 +133,35 @@ fn file_lines(path: &str) -> Result<usize> {
     Ok(contents.lines().count())
 }
 
-fn maybe_warn(results: &[(isize, &String)]) {
-    if results.iter().next().map_or(false, |&(score, _)| score < 0) {
+fn maybe_warn(results: &[(usize, isize, &String)]) {
+    if results
+        .iter()
+        .any(|&(deleted, diff, _)| deleted as isize != diff)
+    {
         eprintln!(
             "\
-Warning: For some files, the number of lines added was less than the file's current number of
-lines. This was likely caused by git reporting that a file was renamed, when it was not."
+Warning: For some files, the total number of lines deleted differs from the total number
+of lines added minus the file's current number of lines. This could be due to an
+incomplete git history, or to git reporting that a file was renamed when it was not.
+"
         );
+    }
+}
+
+fn display_results(results: &[(usize, isize, &String)]) {
+    let width = results.iter().fold(0, |x, &(deleted, diff, _)| {
+        std::cmp::max(x, diff_msg(deleted, diff).len())
+    });
+
+    for &(deleted, diff, path) in results {
+        println!("{deleted:>8}{:>width$}  {path}", diff_msg(deleted, diff));
+    }
+}
+
+fn diff_msg(deleted: usize, diff: isize) -> String {
+    if deleted as isize == diff {
+        String::new()
+    } else {
+        format!(" ({diff})")
     }
 }
