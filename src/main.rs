@@ -69,7 +69,7 @@ fn main() -> Result<()> {
     let mut results = added_map
         .iter()
         .map(|(path, &added)| {
-            let lines = lines_map.get(path.as_str()).unwrap().unwrap();
+            let lines = lines_map.get(path).unwrap().unwrap();
             (added as isize - lines as isize, path)
         })
         .collect::<Vec<_>>();
