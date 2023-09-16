@@ -9,7 +9,7 @@ use std::{
 const START: &str = "<!-- maintenance-burden-start -->\n\n```\n";
 const END: &str = "```\n\n<!-- maintenance-burden-end -->\n";
 
-const MAX_RETRIES: u8 = 3;
+const MAX_RETRIES: u8 = 4;
 
 #[test]
 fn dogfood() {
@@ -37,6 +37,12 @@ fn dogfood() {
                 clean().unwrap(),
                 "BLESS is enabled but repository is not clean"
             );
+
+            Command::new("git")
+                .args(["log", "-1", "--pretty=%s"])
+                .assert()
+                .try_stdout("Update README.md\n")
+                .expect("BLESS is enabled but last commit message is not `Update README.md`");
 
             write("README.md", readme_expected).unwrap();
 
