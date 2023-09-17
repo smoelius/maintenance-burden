@@ -1,6 +1,6 @@
 [package]
 name = "maintenance-burden"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Samuel Moelius <sam@moeli.us>"]
 description = "Calculate the maintenance burden of each file in a git repository"
 edition = "2021"
