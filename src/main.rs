@@ -222,7 +222,7 @@ fn help() -> ! {
         "\
 Calculate the maintenance burden of each file in a git repository
 
-Usage: maintenance-burden [OPTIONS] <PATHS>...
+Usage: maintenance-burden [OPTIONS] [PATHS]...
 
 Arguments:
   [PATHS]  Show the maintenance burden for only the files at PATHS (the quantity is
