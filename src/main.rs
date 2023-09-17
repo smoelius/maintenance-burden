@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use log::debug;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -7,17 +7,28 @@ use std::{
     collections::BTreeMap,
     fs::{read_to_string, symlink_metadata},
     io::{BufRead, BufReader},
+    process::exit,
     str::FromStr,
 };
 use subprocess::{Exec, Redirection};
 
+#[derive(Default)]
+struct Options {
+    verbose: bool,
+    paths: Vec<String>,
+}
+
 fn main() -> Result<()> {
     env_logger::init();
+
+    let options = parse_options()?;
 
     let mut lines_map = BTreeMap::<String, Option<usize>>::new();
     let mut added_map = BTreeMap::<String, usize>::new();
     let mut deleted_map = BTreeMap::<String, usize>::new();
     let mut rename_map = BTreeMap::<String, String>::new();
+
+    prepopulate_lines_map(&options, &mut lines_map)?;
 
     let mut popen = Exec::cmd("git")
         .args(&["log", "--numstat", "--pretty="])
@@ -82,9 +93,9 @@ fn main() -> Result<()> {
 
     results.sort_by_key(|&(deleted, _, _)| deleted);
 
-    maybe_warn(&results);
+    display_results(&options, &results);
 
-    display_results(&results);
+    maybe_warn(&options, &results);
 
     Ok(())
 }
@@ -119,6 +130,17 @@ fn is_rename(s: &str) -> Option<[Cow<str>; 2]> {
     }
 }
 
+fn prepopulate_lines_map(
+    options: &Options,
+    lines_map: &mut BTreeMap<String, Option<usize>>,
+) -> Result<()> {
+    for path in &options.paths {
+        let lines = file_lines(&path)?;
+        lines_map.insert(path.clone(), Some(lines));
+    }
+    Ok(())
+}
+
 fn file_lines(path: &str) -> Result<usize> {
     let metadata =
         symlink_metadata(path).with_context(|| format!("Failed to get metadata for `{path}`"))?;
@@ -133,35 +155,89 @@ fn file_lines(path: &str) -> Result<usize> {
     Ok(contents.lines().count())
 }
 
-fn maybe_warn(results: &[(usize, isize, &String)]) {
-    if results
-        .iter()
-        .any(|&(deleted, diff, _)| deleted as isize != diff)
+fn maybe_warn(options: &Options, results: &[(usize, isize, &String)]) {
+    if options.verbose
+        || results
+            .iter()
+            .all(|&(deleted, diff, path)| !included_path(options, path) || deleted as isize == diff)
     {
-        eprintln!(
-            "\
+        return;
+    }
+
+    eprintln!(
+        "
 Warning: For some files, the total number of lines deleted differs from the total number
 of lines added minus the file's current number of lines. This could be due to an
 incomplete git history, or to git reporting that a file was renamed when it was not.
-"
+
+Passing --verbose shows the difference in parentheses."
+    );
+}
+
+fn display_results(options: &Options, results: &[(usize, isize, &String)]) {
+    let width = results.iter().fold(0, |x, &(deleted, diff, path)| {
+        std::cmp::max(x, diff_msg(options, deleted, diff, path).len())
+    });
+
+    for &(deleted, diff, path) in results {
+        println!(
+            "{deleted:>8}{:>width$}  {path}",
+            diff_msg(options, deleted, diff, path)
         );
     }
 }
 
-fn display_results(results: &[(usize, isize, &String)]) {
-    let width = results.iter().fold(0, |x, &(deleted, diff, _)| {
-        std::cmp::max(x, diff_msg(deleted, diff).len())
-    });
-
-    for &(deleted, diff, path) in results {
-        println!("{deleted:>8}{:>width$}  {path}", diff_msg(deleted, diff));
-    }
-}
-
-fn diff_msg(deleted: usize, diff: isize) -> String {
-    if deleted as isize == diff {
+fn diff_msg(options: &Options, deleted: usize, diff: isize, path: &String) -> String {
+    if !options.verbose || !included_path(options, path) || deleted as isize == diff {
         String::new()
     } else {
         format!(" ({diff})")
     }
+}
+
+fn included_path(options: &Options, path: &String) -> bool {
+    options.paths.is_empty() || options.paths.contains(path)
+}
+
+fn parse_options() -> Result<Options> {
+    let mut options = Options::default();
+    for arg in std::env::args().skip(1) {
+        if arg == "--help" || arg == "-h" {
+            help();
+        } else if arg == "--verbose" {
+            options.verbose = true;
+        } else if arg == "--version" || arg == "-V" {
+            version();
+        } else if arg.starts_with('-') {
+            bail!("unexpected argument '{arg}' found");
+        } else {
+            options.paths.push(arg);
+        }
+    }
+    Ok(options)
+}
+
+fn help() -> ! {
+    println!(
+        "\
+Calculate the maintenance burden of each file in a git repository
+
+Usage: maintenance-burden [OPTIONS] <PATHS>...
+
+Arguments:
+  [PATHS]  Show the maintenance burden for only the files at PATHS (the quantity is
+           still calculated for each file in the repository)
+
+Options:
+      --verbose  Show the difference between the number of lines added and the current
+                 number of lines if not equal to the number of lines deleted
+  -h, --help     Print help
+  -V, --version  Print version"
+    );
+    exit(0);
+}
+
+fn version() -> ! {
+    println!("maintenance-burden {}", env!("CARGO_PKG_VERSION"));
+    exit(0);
 }
