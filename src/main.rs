@@ -6,7 +6,7 @@ use std::{
     borrow::Cow,
     collections::BTreeMap,
     fs::{read_to_string, symlink_metadata},
-    io::BufRead,
+    io::{BufRead, BufReader},
     str::FromStr,
 };
 use subprocess::{Exec, Redirection};
@@ -24,7 +24,7 @@ fn main() -> Result<()> {
         .stdout(Redirection::Pipe)
         .popen()?;
 
-    let reader = std::io::BufReader::new(popen.stdout.take().unwrap());
+    let reader = BufReader::new(popen.stdout.take().unwrap());
 
     for result in reader.lines() {
         let line = result.with_context(|| "Failed to read git output")?;

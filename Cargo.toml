@@ -23,5 +23,6 @@ similar-asserts = "1.5"
 libraries = [
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/general" },
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/supplementary" },
+    { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/inconsistent_qualification" },
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/try_io_result" },
 ]
