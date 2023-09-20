@@ -1,3 +1,6 @@
+#![allow(clippy::cast_possible_wrap)]
+#![cfg_attr(dylint_lib = "general", allow(crate_wide_allow))]
+
 use anyhow::{bail, Context, Result};
 use log::debug;
 use once_cell::sync::Lazy;
@@ -135,7 +138,7 @@ fn prepopulate_lines_map(
     lines_map: &mut BTreeMap<String, Option<usize>>,
 ) -> Result<()> {
     for path in &options.paths {
-        let lines = file_lines(&path)?;
+        let lines = file_lines(path)?;
         lines_map.insert(path.clone(), Some(lines));
     }
     Ok(())
