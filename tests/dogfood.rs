@@ -42,7 +42,12 @@ fn dogfood() {
                 .args(["log", "-1", "--pretty=%s"])
                 .assert()
                 .try_stdout("Update README.md\n")
-                .expect("BLESS is enabled but last commit message is not `Update README.md`");
+                .expect(
+                    "BLESS is enabled but last commit message is not `Update README.md`. \
+                     Try the following command, then rerun:
+    git commit --allow-empty -m Update\\ README.md
+",
+                );
 
             write("README.md", readme_expected).unwrap();
 
