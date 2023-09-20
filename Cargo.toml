@@ -17,7 +17,9 @@ subprocess = "0.2"
 
 [dev-dependencies]
 assert_cmd = "2.0"
+ctor = "0.2"
 similar-asserts = "1.5"
+tempfile = "3.8"
 
 [workspace.metadata.dylint]
 libraries = [

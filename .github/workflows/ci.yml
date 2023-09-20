@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 3 * * 5" # 5 = Friday
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('.github/workflows/ci.yml', 'tests/ci.rs') }}
+
+      - name: Install tools
+        run: |
+          rustup install nightly
+          cargo install cargo-dylint dylint-link || true
+          cargo install cargo-license            || true
+          cargo install cargo-sort               || true
+
+      - name: Test
+        run: cargo test
