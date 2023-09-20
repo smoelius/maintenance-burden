@@ -1,7 +1,7 @@
 #![allow(clippy::cast_possible_wrap)]
 #![cfg_attr(dylint_lib = "general", allow(crate_wide_allow))]
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result};
 use log::debug;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -10,21 +10,17 @@ use std::{
     collections::BTreeMap,
     fs::{read_to_string, symlink_metadata},
     io::{BufRead, BufReader},
-    process::exit,
     str::FromStr,
 };
 use subprocess::{Exec, Redirection};
 
-#[derive(Default)]
-struct Options {
-    verbose: bool,
-    paths: Vec<String>,
-}
+mod options;
+use options::Options;
 
 fn main() -> Result<()> {
     env_logger::init();
 
-    let options = parse_options()?;
+    let options = Options::parse()?;
 
     let mut lines_map = BTreeMap::<String, Option<usize>>::new();
     let mut added_map = BTreeMap::<String, usize>::new();
@@ -162,7 +158,7 @@ fn maybe_warn(options: &Options, results: &[(usize, isize, &String)]) {
     if options.verbose
         || results
             .iter()
-            .all(|&(deleted, diff, path)| !included_path(options, path) || deleted as isize == diff)
+            .all(|&(deleted, diff, path)| !options.included_path(path) || deleted as isize == diff)
     {
         return;
     }
@@ -191,56 +187,9 @@ fn display_results(options: &Options, results: &[(usize, isize, &String)]) {
 }
 
 fn diff_msg(options: &Options, deleted: usize, diff: isize, path: &String) -> String {
-    if !options.verbose || !included_path(options, path) || deleted as isize == diff {
+    if !options.verbose || !options.included_path(path) || deleted as isize == diff {
         String::new()
     } else {
         format!(" ({diff})")
     }
-}
-
-fn included_path(options: &Options, path: &String) -> bool {
-    options.paths.is_empty() || options.paths.contains(path)
-}
-
-fn parse_options() -> Result<Options> {
-    let mut options = Options::default();
-    for arg in std::env::args().skip(1) {
-        if arg == "--help" || arg == "-h" {
-            help();
-        } else if arg == "--verbose" {
-            options.verbose = true;
-        } else if arg == "--version" || arg == "-V" {
-            version();
-        } else if arg.starts_with('-') {
-            bail!("unexpected argument '{arg}' found");
-        } else {
-            options.paths.push(arg);
-        }
-    }
-    Ok(options)
-}
-
-fn help() -> ! {
-    println!(
-        "\
-Calculate the maintenance burden of each file in a git repository
-
-Usage: maintenance-burden [OPTIONS] [PATHS]...
-
-Arguments:
-  [PATHS]  Show the maintenance burden for only the files at PATHS (the quantity is
-           still calculated for each file in the repository)
-
-Options:
-      --verbose  Show the difference between the number of lines added and the current
-                 number of lines if not equal to the number of lines deleted
-  -h, --help     Print help
-  -V, --version  Print version"
-    );
-    exit(0);
-}
-
-fn version() -> ! {
-    println!("maintenance-burden {}", env!("CARGO_PKG_VERSION"));
-    exit(0);
 }
