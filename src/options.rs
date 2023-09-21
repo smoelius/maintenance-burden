@@ -3,6 +3,7 @@ use std::process::exit;
 
 #[derive(Default)]
 pub struct Options {
+    pub exclude: bool,
     pub verbose: bool,
     pub paths: Vec<String>,
 }
@@ -11,7 +12,9 @@ impl Options {
     pub fn parse() -> Result<Self> {
         let mut options = Self::default();
         for arg in std::env::args().skip(1) {
-            if arg == "--help" || arg == "-h" {
+            if arg == "--exclude" {
+                options.exclude = true;
+            } else if arg == "--help" || arg == "-h" {
                 help();
             } else if arg == "--verbose" {
                 options.verbose = true;
@@ -27,7 +30,7 @@ impl Options {
     }
 
     pub fn included_path(&self, path: &String) -> bool {
-        self.paths.is_empty() || self.paths.contains(path)
+        self.paths.is_empty() || (self.exclude != self.paths.contains(path))
     }
 }
 
@@ -40,9 +43,11 @@ Usage: maintenance-burden [OPTIONS] [PATHS]...
 
 Arguments:
   [PATHS]  Show the number of lines deleted for only the files at PATHS (the quantity
-           is still calculated for each file in the repository)
+           is still calculated for each file in the repository); see also --exclude
 
 Options:
+      --exclude  Show the number of lines deleted for all files except those at PATHS,
+                 instead of only those at PATHS
       --verbose  Show the difference between the number of lines added and the current
                  number of lines if not equal to the number of lines deleted
   -h, --help     Print help

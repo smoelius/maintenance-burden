@@ -176,10 +176,12 @@ fn display_results(options: &Options, results: &[(usize, isize, &String)]) {
     });
 
     for &(deleted, diff, path) in results {
-        println!(
-            "{deleted:>8}{:>width$}  {path}",
-            diff_msg(options, deleted, diff, path)
-        );
+        if options.included_path(path) {
+            println!(
+                "{deleted:>8}{:>width$}  {path}",
+                diff_msg(options, deleted, diff, path)
+            );
+        }
     }
 }
 
