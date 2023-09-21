@@ -60,7 +60,7 @@ For some files, the following two quantities may differ:
 
 This can happen because of an incomplete git history, or because git reports that a
 file was renamed when it was not. Passing --verbose shows the latter quantity in
-parentheses next to the former."
+parentheses next to the former when they differ."
     );
     exit(0);
 }
