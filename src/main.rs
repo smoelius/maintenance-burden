@@ -165,11 +165,8 @@ fn maybe_warn(options: &Options, results: &[(usize, isize, &String)]) {
 
     eprintln!(
         "
-Warning: For some files, the total number of lines deleted differs from the total number
-of lines added minus the file's current number of lines. This could be due to an
-incomplete git history, or to git reporting that a file was renamed when it was not.
-
-Passing --verbose shows the difference in parentheses."
+Warning: For some files, the number of lines deleted is not equal to the number of
+lines added minus the current number of lines. Pass --help for more information."
     );
 }
 

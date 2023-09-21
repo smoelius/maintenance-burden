@@ -34,19 +34,28 @@ impl Options {
 fn help() -> ! {
     println!(
         "\
-Calculate the maintenance burden of each file in a git repository
+Calculate the number of lines deleted for each file in a git repository
 
 Usage: maintenance-burden [OPTIONS] [PATHS]...
 
 Arguments:
-  [PATHS]  Show the maintenance burden for only the files at PATHS (the quantity is
-           still calculated for each file in the repository)
+  [PATHS]  Show the number of lines deleted for only the files at PATHS (the quantity
+           is still calculated for each file in the repository)
 
 Options:
       --verbose  Show the difference between the number of lines added and the current
                  number of lines if not equal to the number of lines deleted
   -h, --help     Print help
-  -V, --version  Print version"
+  -V, --version  Print version
+
+For some files, the following two quantities may differ:
+
+  - the number of lines deleted
+  - the number of lines added minus the current number of lines
+
+This can happen because of an incomplete git history, or because git reports that a
+file was renamed when it was not. Passing --verbose shows the latter quantity in
+parentheses next to the former."
     );
     exit(0);
 }
