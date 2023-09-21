@@ -1,14 +1,12 @@
 # maintenance-burden
 
-Calculate the _maintenance burden_ of each file in a git repository
+Calculate the number of lines deleted for each file in a git repository
 
-This tool defines the _maintenance burden_ of a file to be:
+The purpose of this tool is to help you judge where you might be spending time on your software in ways that aren't providing value.
 
-- the total number of lines deleted from the file across all commits in the repository
+Put simply, a line that is deleted can no longer provide value. Moreover, deleting a line takes effort, e.g., in deciding whether to delete the line. This is on top of the effort required to add the line in the fist place. Hence, if one is looking to reduce their software's maintenance costs, they might scrutinize files with large numbers of deleted lines.
 
-For most files, this is the same as the total number of lines added minus the file's current number of lines. However, the two quantities can differ because of an incomplete git history, or git reporting that a file was renamed when it was not.
-
-**Rationale.** Think of maintaining a vehicle. The parts that are still in the vehicle may provide value, but once a part is replaced, it is simply a cost. Preliminary experiments suggest this metaphor applies well to software.
+**Note:** For most files, the number of lines deleted is the same as the number of lines added minus the file's current number of lines. However, the two quantities can differ because of an incomplete git history, or git reporting that a file was renamed when it was not.
 
 ## Example
 
@@ -21,13 +19,13 @@ Running `maintenance-burden` on its own repository produces the following output
        0  .github/workflows/ci.yml
        0  .gitignore
        0  CHANGELOG.md
-       0  src/options.rs
        0  tests/ci.rs
        1  Cargo.toml
        6  tests/dogfood.rs
+       7  src/options.rs
       14  Cargo.lock
-      29  README.md
-      92  src/main.rs
+      38  README.md
+     104  src/main.rs
 ```
 
 <!-- maintenance-burden-end -->
