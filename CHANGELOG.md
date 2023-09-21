@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Update help message ([#6](https://github.com/smoelius/maintenance-burden/pull/6))
+
 ## 0.1.2
 
 - Add `--exclude` option ([224f8d3](https://github.com/smoelius/maintenance-burden/commit/224f8d3f6269c187c4c561f2508c03f52e7cb17f))

@@ -20,11 +20,11 @@ Running `maintenance-burden` on its own repository produces the following output
        0  .gitignore
        0  tests/ci.rs
        2  CHANGELOG.md
-       2  Cargo.toml
+       3  Cargo.toml
        6  tests/dogfood.rs
        8  src/options.rs
-      15  Cargo.lock
-      46  README.md
+      16  Cargo.lock
+      49  README.md
      104  src/main.rs
 ```
 
