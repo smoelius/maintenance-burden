@@ -63,7 +63,7 @@ fn main() -> Result<()> {
             .map_or(current_to_name, String::as_str);
 
         if lines_map.get(final_to_name).is_none() {
-            let maybe_lines = file_lines(final_to_name)
+            let maybe_lines = count_lines(final_to_name)
                 .map_err(|error| debug!("{error}"))
                 .ok();
             lines_map.insert(final_to_name.to_owned(), maybe_lines);
@@ -134,13 +134,13 @@ fn prepopulate_lines_map(
     lines_map: &mut BTreeMap<String, Option<usize>>,
 ) -> Result<()> {
     for path in &options.paths {
-        let lines = file_lines(path)?;
+        let lines = count_lines(path)?;
         lines_map.insert(path.clone(), Some(lines));
     }
     Ok(())
 }
 
-fn file_lines(path: &str) -> Result<usize> {
+fn count_lines(path: &str) -> Result<usize> {
     let metadata =
         symlink_metadata(path).with_context(|| format!("Failed to get metadata for `{path}`"))?;
 
