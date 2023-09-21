@@ -6,7 +6,7 @@ The purpose of this tool is to help you judge where you might be spending time o
 
 Put simply, a line that is deleted can no longer provide value. Moreover, deleting a line takes effort, e.g., in deciding whether to delete the line. This is on top of the effort required to add the line in the fist place. Hence, if one is looking to reduce their software's maintenance costs, they might scrutinize files with large numbers of deleted lines.
 
-**Note:** For most files, the number of lines deleted is the same as the number of lines added minus the file's current number of lines. However, the two quantities can differ because of an incomplete git history, or git reporting that a file was renamed when it was not.
+**Note:** For most files, the number of lines deleted is the same as the number of lines added minus the file's current number of lines. However, the two quantities can differ because of an incomplete git history, or because git reports that a file was renamed when it was not.
 
 ## Example
 
@@ -24,7 +24,7 @@ Running `maintenance-burden` on its own repository produces the following output
        6  tests/dogfood.rs
        7  src/options.rs
       15  Cargo.lock
-      42  README.md
+      44  README.md
      104  src/main.rs
 ```
 
