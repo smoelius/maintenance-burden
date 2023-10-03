@@ -23,8 +23,8 @@ Running `maintenance-burden` on its own repository produces the following output
        3  Cargo.toml
        6  tests/dogfood.rs
        8  src/options.rs
-      18  Cargo.lock
-      53  README.md
+      24  Cargo.lock
+      55  README.md
      104  src/main.rs
 ```
 
