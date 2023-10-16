@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Documentation improvements ([#13](https://github.com/smoelius/maintenance-burden/pull/13))
+
 ## 0.1.3
 
 - Update help message ([#6](https://github.com/smoelius/maintenance-burden/pull/6))
