@@ -15,14 +15,14 @@ Running `maintenance-burden` on its own repository produces the following output
 ```
        0  .github/dependabot.yml
        0  .gitignore
-       0  tests/ci.rs
        1  .github/workflows/ci.yml
+       1  tests/ci.rs
        2  CHANGELOG.md
        4  Cargo.toml
        6  tests/dogfood.rs
        8  src/options.rs
       29  Cargo.lock
-      58  README.md
+      62  README.md
      104  src/main.rs
 ```
 
