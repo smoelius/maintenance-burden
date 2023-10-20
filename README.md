@@ -1,6 +1,6 @@
 # maintenance-burden
 
-Calculate the number of lines deleted for each file in a git repository
+**Calculate the number of lines deleted for each file in a git repository**
 
 The purpose of this tool is to help you judge where you might be spending time on your software in ways that aren't providing value.
 
@@ -22,7 +22,7 @@ Running `maintenance-burden` on its own repository produces the following output
        6  tests/dogfood.rs
        8  src/options.rs
       41  Cargo.lock
-      67  README.md
+      69  README.md
      104  src/main.rs
 ```
 
