@@ -6,6 +6,8 @@ use std::{
     io::Result,
 };
 
+// smoelius: I experimented with computing the README.md's changes directly, rather than iterating.
+// But things get tricky when the files' ordering changes.
 const MAX_RETRIES: u8 = 4;
 
 const START: &str = "<!-- maintenance-burden-start -->\n\n```\n";
@@ -43,8 +45,8 @@ fn dogfood() {
                 .assert()
                 .try_stdout("Update README.md\n")
                 .expect(
-                    "BLESS is enabled but last commit message is not `Update README.md`. \
-                     Try the following command, then rerun:
+                    "BLESS is enabled but last commit message is not `Update README.md`. Try the \
+                     following command, then rerun:
     git commit --allow-empty -m Update\\ README.md
 ",
                 );
