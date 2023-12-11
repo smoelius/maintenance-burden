@@ -19,11 +19,11 @@ Running `maintenance-burden` on its own repository produces the following output
        1  .github/workflows/ci.yml
        1  tests/ci.rs
        2  CHANGELOG.md
-       5  Cargo.toml
+       6  Cargo.toml
        8  src/options.rs
        8  tests/dogfood.rs
-      49  Cargo.lock
-      75  README.md
+      51  Cargo.lock
+      78  README.md
      104  src/main.rs
 ```
 
