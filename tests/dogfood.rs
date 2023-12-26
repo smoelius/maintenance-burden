@@ -3,7 +3,7 @@ use similar_asserts::SimpleDiff;
 use std::{
     env::var,
     fs::{read_to_string, write},
-    io::Result,
+    io::{stderr, Result, Write},
 };
 
 // smoelius: I experimented with computing the README.md's changes directly, rather than iterating.
@@ -40,17 +40,23 @@ fn dogfood() {
                 "BLESS is enabled but repository is not clean"
             );
 
-            Command::new("git")
+            let assert = Command::new("git")
                 .args(["log", "-1", "--pretty=%s"])
                 .assert()
-                .try_stdout("Update README.md\n")
-                .expect(
-                    "BLESS is enabled but last commit message is not `Update README.md`. Try the \
-                     following command, then rerun:
-    git commit --allow-empty -m Update\\ README.md
-",
-                );
-
+                .success();
+            if assert.try_stdout("Update README.md\n").is_err() {
+                let mut command = Command::new("git");
+                command.args(["commit", "--allow-empty", "-m", "Update README.md"]);
+                stderr()
+                    .write_fmt(format_args!(
+                        "BLESS is enabled but last commit message is not `Update README.md`. \
+                         Running the following command:
+    {command:?}
+"
+                    ))
+                    .expect("Could not write to stderr");
+                command.assert().success();
+            }
             write("README.md", readme_expected).unwrap();
 
             Command::new("git")
