@@ -14,6 +14,7 @@ Running `maintenance-burden` on its own repository produces the following output
 
 ```
        0  .github/dependabot.yml
+       0  .github/workflows/dependabot.yml
        0  .gitignore
        0  rustfmt.toml
        1  .github/workflows/ci.yml
