@@ -14,9 +14,9 @@ Running `maintenance-burden` on its own repository produces the following output
 
 ```
        0  .github/dependabot.yml
-       0  .github/workflows/dependabot.yml
        0  .gitignore
        0  rustfmt.toml
+       1  .github/workflows/dependabot.yml
        1  tests/ci.rs
        2  .github/workflows/ci.yml
        2  CHANGELOG.md
@@ -24,7 +24,7 @@ Running `maintenance-burden` on its own repository produces the following output
        8  src/options.rs
       18  tests/dogfood.rs
       83  Cargo.lock
-      92  README.md
+      94  README.md
      104  src/main.rs
 ```
 
