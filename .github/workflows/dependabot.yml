@@ -1,0 +1,31 @@
+name: Dependabot workflow
+
+on:
+  pull_request_target:
+  workflow_dispatch:
+
+jobs:
+  dependabot:
+    # Note that `github.event.pull_request.user.login` is the user that opened the pull request,
+    # which may be different from `github.actor`, the user that triggered the action.
+    # See: https://github.com/orgs/community/discussions/25502
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+          # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#push-using-ssh-deploy-keys
+          ssh-key: ${{ secrets.SSH_KEY }}
+
+      - name: Update readme
+        run: cargo test --test dogfood
+        env:
+          BLESS: 1
+
+      - name: Push
+        run: git push
