@@ -18,13 +18,13 @@ Running `maintenance-burden` on its own repository produces the following output
        0  rustfmt.toml
        1  .github/workflows/dependabot.yml
        1  tests/ci.rs
-       2  .github/workflows/ci.yml
        2  CHANGELOG.md
+       3  .github/workflows/ci.yml
        7  Cargo.toml
        8  src/options.rs
       18  tests/dogfood.rs
       92  Cargo.lock
-     100  README.md
+     102  README.md
      104  src/main.rs
 ```
 
