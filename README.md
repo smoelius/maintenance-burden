@@ -24,8 +24,8 @@ Running `maintenance-burden` on its own repository produces the following output
        8  src/options.rs
       18  tests/dogfood.rs
      104  src/main.rs
-     105  README.md
-     117  Cargo.lock
+     107  README.md
+     119  Cargo.lock
 ```
 
 <!-- maintenance-burden-end -->
