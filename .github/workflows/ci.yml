@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -37,8 +37,7 @@ jobs:
       - name: Install tools
         run: |
           rustup install nightly
-          cargo install cargo-dylint --no-default-features --features=metadata-cli || true
-          cargo install dylint-link              || true
+          cargo install cargo-dylint dylint-link || true
           cargo install cargo-license            || true
           cargo install cargo-sort               || true
 
