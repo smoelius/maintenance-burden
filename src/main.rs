@@ -62,7 +62,7 @@ fn main() -> Result<()> {
             .get(current_to_name)
             .map_or(current_to_name, String::as_str);
 
-        if lines_map.get(final_to_name).is_none() {
+        if !lines_map.contains_key(final_to_name) {
             let maybe_lines = count_lines(final_to_name)
                 .map_err(|error| debug!("{error}"))
                 .ok();
