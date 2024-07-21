@@ -21,6 +21,10 @@ ctor = "0.2"
 similar-asserts = "1.5"
 tempfile = "3.10"
 
+[lints.rust.unexpected_cfgs]
+level = "deny"
+check-cfg = ["cfg(dylint_lib, values(any()))"]
+
 [workspace.metadata.dylint]
 libraries = [
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/general" },
